@@ -53,33 +53,28 @@ class Hook(object):
         self.name = self.__class__.__name__
 
     def run(self):
-        print 'Running hook: %s' % self.__class__.__name__
+        """
+        Run all the hook methods implemented on the Hook subclass
+
+        If any method throws an exception, the commit will be rejected
+        """
+        print 'Running hook: %s' % self.name
 
         try:
             changed_files = [open(file) for file in self.repo.changed_files()]
-            self.all_files(changed_files)
-
+            self.all_changed_files(changed_files)
             for file in changed_files:
-                self.each_file(file)
+                self.each_changed_file(file)
         except Exception, e:
-            print e
+            print "\n--- REJECTED ---\n"
+            print "Your commit was REJECTED by the hook: %s"  % self.name
+            error_message = str(e)
+            if error_message:
+                print error_message
             sys.exit(1)
 
-
-    def all_files(self, files):
+    def all_changed_files(self, files):
         pass
 
-    def each_file(self, file):
+    def each_changed_file(self, file):
         pass
-
-    def each_line(self, line):
-        pass
-
-
-if __name__ == '__main__':
-
-    class TestClass(Hook):
-
-        def each_file(self, file):
-            print file
-
