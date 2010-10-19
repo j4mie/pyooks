@@ -49,6 +49,9 @@ class Hook(object):
 
     repo = RepositoryEnvironment()
 
+    def __init__(self):
+        self.name = self.__class__.__name__
+
     def run(self):
         print 'Running hook: %s' % self.__class__.__name__
 
