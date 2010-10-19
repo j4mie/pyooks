@@ -14,7 +14,10 @@ class RepositoryEnvironment(object):
         that will be appended to the basic git
         command.
         """
-        git = subprocess.Popen(['git'] + args, stdout=subprocess.PIPE)
+        return subprocess.Popen(
+            ['git'] + args,
+            stdout=subprocess.PIPE
+        ).communicate()[0].split('\n')[:-1]
         return git.stdout.read().split('\n')[:-1]
 
     def changed_files(self):
