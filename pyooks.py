@@ -17,9 +17,6 @@ class RepositoryEnvironment(object):
         git = subprocess.Popen(['git'] + args, stdout=subprocess.PIPE)
         return git.stdout.read().split('\n')[:-1]
 
-    def changed_lines(self):
-        pass
-
     def changed_files(self):
         return self._run_command(['diff-index', '--cached', '--name-only', 'HEAD'])
 
