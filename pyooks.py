@@ -1,5 +1,16 @@
 
 
+class RepositoryEnvironment(object):
+    """
+    Provide an interface to a Git repository
+    """
+    def changed_lines(self):
+        pass
+
+    def changed_files(self):
+        pass
+
+
 class HookMeta(type):
     """
     Metaclass for all hooks.
@@ -30,17 +41,6 @@ class Hook(object):
 
     def run(self):
         print 'running hook %s' % self.__class__.__name__
-
-
-class RepositoryEnvironment(object):
-    """
-    Provide an interface to a Git repository
-    """
-    def changed_lines(self):
-        pass
-
-    def changed_files(self):
-        pass
 
 
 if __name__ == '__main__':
