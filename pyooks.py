@@ -1,14 +1,27 @@
-
+import subprocess
+import sys
 
 class RepositoryEnvironment(object):
     """
     Provide an interface to a Git repository
     """
+
+    def _run_command(self, args):
+        """
+        Run a git command.
+
+        args should contain a list of arguments
+        that will be appended to the basic git
+        command.
+        """
+        git = subprocess.Popen(['git'] + args, stdout=subprocess.PIPE)
+        return git.stdout.read().split('\n')[:-1]
+
     def changed_lines(self):
         pass
 
     def changed_files(self):
-        pass
+        return self._run_command(['diff-index', '--cached', '--name-only', 'HEAD'])
 
 
 class HookMeta(type):
@@ -40,10 +53,33 @@ class Hook(object):
     repo = RepositoryEnvironment()
 
     def run(self):
-        print 'running hook %s' % self.__class__.__name__
+        print 'Running hook: %s' % self.__class__.__name__
+
+        try:
+            changed_files = [open(file) for file in self.repo.changed_files()]
+            self.all_files(changed_files)
+
+            for file in changed_files:
+                self.each_file(file)
+        except Exception, e:
+            print e
+            sys.exit(1)
+
+
+    def all_files(self, files):
+        pass
+
+    def each_file(self, file):
+        pass
+
+    def each_line(self, line):
+        pass
 
 
 if __name__ == '__main__':
 
     class TestClass(Hook):
-        pass
+
+        def each_file(self, file):
+            print file
+
